@@ -29,8 +29,11 @@ class File
   {
 protected:
    int               m_handle;
+   string            m_path;
 
-                     File(string name,int flags,int delimiter=0,int codepage=CP_ACP):m_handle(INVALID_HANDLE)
+                     File(string name,int flags,int delimiter=0,int codepage=CP_ACP)
+                       : m_handle(INVALID_HANDLE)
+                       , m_path(name)
      {
       m_handle=FileOpen(name,flags,delimiter,codepage);
      }
@@ -60,6 +63,8 @@ public:
    static long       size(string name,bool common=false) {return FileGetInteger(name,FILE_SIZE,common);}
 
    bool              valid() const {return m_handle!=INVALID_HANDLE;}
+   /** The relative file path from the mt-terminal directory. */
+   string            getPath() const { return m_path; }
 
    datetime          getCreateDate() {return (datetime)FileGetInteger(m_handle,FILE_CREATE_DATE);}
    datetime          getModifyDate() {return (datetime)FileGetInteger(m_handle,FILE_MODIFY_DATE);}
