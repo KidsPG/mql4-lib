@@ -51,7 +51,7 @@ public:
 			text = "SUCCESS";
 			break;
 		case REASON_ACCOUNT:
-			text = "REASON_ACCOUNT, " + AccountInfoInteger(ACCOUNT_LOGIN);
+			text = "REASON_ACCOUNT, " + string(AccountInfoInteger(ACCOUNT_LOGIN));
 			break;
 		case REASON_CHARTCHANGE:
 			text = "REASON_CHARTCHANGE";
@@ -75,7 +75,7 @@ public:
 			text = "REASON_INITFAILED, see log";
 			break;
 		default:
-			text = "Unsupported reason code " + reasonCode;
+			text = "Unsupported reason code " + string(reasonCode);
 		}
 		//---
 		return text;
