@@ -153,6 +153,14 @@ public:
    int               readInteger() const {return int(FileReadNumber(m_handle));}
    datetime          readDateTime() const {return FileReadDatetime(m_handle);}
    bool              readBool() const {return FileReadBool(m_handle);}
+   string readLine() const {
+     string line = "";
+     // NOTICE use do/while DO NOT directly use `while(!csv.isLineEnding())` here or you will run into a infinite loop
+     do {
+       line += readString() + m_delimiter; // read field by field as string
+     } while (!isLineEnding());
+     return StringSubstr(line, 0, StringLen(line) - 1); // strip trailing delimiter
+   }
 
    uint              writeString(string value) {return FileWriteString(m_handle,value);}
    /** flags (use one or combine with pipes): TIME_DATE | TIME_MINUTES | TIME_SECONDS */
