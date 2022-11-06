@@ -110,7 +110,8 @@ public:
    static double     getMaxLot(string symbol) {return SymbolInfoDouble(symbol,SYMBOL_VOLUME_MAX);}
 
    //-- utility methods
-   static double     normalizeLots(string symbol,double lots) {return Math::roundUpToMultiple(lots,getMinLot(symbol));}
+   /** This will not round to MINLOT but LOTSTEP, make sure lots is already >= min. upon calling. */
+   static double     normalizeLots(string symbol,double lots) {return Math::roundUpToMultiple(lots, getLotStep(symbol));}
    static double     normalizePrice(string symbol,double price) {return NormalizeDouble(price,getDigits(symbol));}
 
    static double     addPoints(string symbol,double price,int points) {return NormalizeDouble(price+points*getPoint(symbol),getDigits(symbol));}

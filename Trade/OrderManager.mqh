@@ -60,7 +60,7 @@ public:
 private:
 	//current symbol
 	const string s;
-	const double MINLOT;
+	const double m_lotStep;
 	const double POINT;
 	const int STOPLEVEL;
 
@@ -70,7 +70,7 @@ protected:
 public:
 	OrderManager(string symbol)
 		: s(symbol),
-		  MINLOT(SymbolInfoDouble(symbol, SYMBOL_VOLUME_MIN)),
+		  m_lotStep(SymbolInfoDouble(symbol, SYMBOL_VOLUME_STEP)),
 		  POINT(SymbolInfoDouble(symbol, SYMBOL_POINT)),
 		  STOPLEVEL((int)SymbolInfoInteger(symbol, SYMBOL_TRADE_STOPS_LEVEL)),
 		  m_slippage(3),
@@ -82,7 +82,7 @@ public:
 
   // Copy constructor
 	OrderManager(OrderManager& o)
-  	  : s(o.s), MINLOT(o.MINLOT), POINT(o.POINT), STOPLEVEL(o.STOPLEVEL), m_slippage(o.m_slippage)
+  	  : s(o.s), m_lotStep(o.m_lotStep), POINT(o.POINT), STOPLEVEL(o.STOPLEVEL), m_slippage(o.m_slippage)
 	    , m_lastError(o.m_lastError), m_closeColor(o.m_closeColor) {
 	  m_color[0] = o.m_color[0];
 	  m_color[1] = o.m_color[1];
@@ -197,10 +197,11 @@ int OrderManager::deducePendType(int op, double price) {
 //| Raw send command for both pending and market orders              |
 //| Takes care of normaling lots and prices                          |
 //| Internal use only. `price` parameter should always be normalized |
+//| This will NOT round up to `MINLOT`, make sure `lots` is >= min.  |
 //+------------------------------------------------------------------+
 int OrderManager::send(int cmd, double lots, double price, double stoploss, double takeprofit, string comment = NULL,
     int magic = 0, datetime expiration = 0) {
-	int ticket = OrderSend(s, cmd, Math::roundUpToMultiple(lots, MINLOT),
+	int ticket = OrderSend(s, cmd, Math::roundUpToMultiple(lots, m_lotStep),
 						   price, m_slippage,
 						   OrderBase::N(s, stoploss),
 						   OrderBase::N(s, takeprofit),
